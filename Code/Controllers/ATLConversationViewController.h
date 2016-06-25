@@ -99,6 +99,14 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (NSOrderedSet <LYRMessage*> *)conversationViewController:(ATLConversationViewController *)viewController messagesForMediaAttachments:(NSArray <ATLMediaAttachment*> *)mediaAttachments;
 
+
+/**
+ @abstract Asks the delegate whether or not to display the participant label
+ @param viewController The `ATLConversationViewController` supplying the content parts.
+ @param message The `LYRMessage` object that will be displayed in the cell.
+ @return BOOL to decide whether to display the label
+ */
+- (BOOL)conversationViewController:(ATLConversationViewController *)viewController shouldDisplaySenderLabelForMessage:(LYRMessage *)message;
 @end
 
 ///---------------------------------------

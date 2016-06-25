@@ -500,6 +500,9 @@ static NSInteger const ATLPhotoActionSheet = 1000;
             return NO;
         }
     }
+    if ([self.delegate respondsToSelector:@selector(conversationViewController:shouldDisplaySenderLabelForMessage:)]) {
+        return [self.delegate conversationViewController:self shouldDisplaySenderLabelForMessage:message];
+    }
     return YES;
 }
 
