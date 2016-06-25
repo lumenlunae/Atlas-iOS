@@ -600,6 +600,25 @@ extern NSString *const ATLMessageInputToolbarSendButton;
     expect(cellThree.avatarImageView.hidden).to.equal(NO);
 }
 
+- (void)testToVerifySenderLabelsShownForOneOtherParticipant
+{
+    ATLUserMock *mockUser = [ATLUserMock userWithMockUserName:ATLMockUserNameBlake];
+    LYRClientMock *layerClient = [LYRClientMock layerClientMockWithAuthenticatedUserID:mockUser.participantIdentifier];
+
+    LYRMessagePartMock *part = [LYRMessagePartMock messagePartWithText:@"Test"];
+    LYRMessageMock *message = [layerClient newPlatformMessageWithParts:@[part] senderName:mockUser.fullName options:nil error:nil];
+    [self.conversation sendMessage:message error:nil];
+    
+    [self setupConversationViewController];
+    
+    self.viewController.shouldDisplaySenderLabelForOneOtherParticipant = YES;
+
+    [self setRootViewController:self.viewController];
+    
+    UILabel *label = (UILabel *)[tester waitForViewWithAccessibilityLabel:ATLConversationViewHeaderIdentifier];
+    expect(label.text).to.equal(mockUser.fullName);
+}
+
 - (void)testToVerifyAvatarImageIsDisplayedForEveryMessage
 {
     NSTimeInterval oneMinuteTwoSecondsAgoInterval = -62;
