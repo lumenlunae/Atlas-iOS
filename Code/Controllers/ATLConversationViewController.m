@@ -585,7 +585,13 @@ static NSInteger const ATLPhotoActionSheet = 1000;
     // If there's no content in the input field, send the location.
     NSOrderedSet *messages = [self messagesForMediaAttachments:messageInputToolbar.mediaAttachments];
     if (messages.count == 0 && messageInputToolbar.textInputView.text.length == 0) {
-        [self sendLocationMessage];
+        BOOL useDefaultAction = YES;
+        if ([self.delegate respondsToSelector:@selector(conversationViewControllerDidTapRightAccessoryButtonShouldSendLocation:)]) {
+            useDefaultAction = [self.delegate conversationViewControllerDidTapRightAccessoryButtonShouldSendLocation:self];
+        }
+        if (useDefaultAction) {
+            [self sendLocationMessage];
+        }
     } else {
         for (LYRMessage *message in messages) {
             [self sendMessage:message];

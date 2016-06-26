@@ -107,6 +107,13 @@ NS_ASSUME_NONNULL_BEGIN
  @return BOOL to decide whether to display the label
  */
 - (BOOL)conversationViewController:(ATLConversationViewController *)viewController shouldDisplaySenderLabelForMessage:(LYRMessage *)message;
+
+/**
+@abstract Asks the delegate whether or not ti use the rightAccessoryButton for its default Send Location action
+@param viewController The `ATLConversationViewController` supplying the content parts.
+@return YES will send location. NO will not. Can add custom action within the delegate
+ */
+- (BOOL)conversationViewControllerDidTapRightAccessoryButtonShouldSendLocation:(ATLConversationViewController *)viewController;
 @end
 
 ///---------------------------------------
