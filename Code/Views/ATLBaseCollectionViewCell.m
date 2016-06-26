@@ -174,6 +174,12 @@ CGFloat const ATLAvatarImageTailPadding = 4.0f;
             [self.contentView addConstraint:self.bubbleWithAvatarLeadConstraint];
             self.bubbleWithoutAvatarLeadConstraint = [NSLayoutConstraint constraintWithItem:self.bubbleView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeRight multiplier:1.0 constant:-ATLMessageCellHorizontalMargin];
             break;
+        case ATLCenteredCellType:
+            [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.avatarImageView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeLeft multiplier:1.0 constant:ATLAvatarImageLeadPadding]];
+            self.bubbleWithAvatarLeadConstraint = [NSLayoutConstraint constraintWithItem:self.bubbleView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.avatarImageView attribute:NSLayoutAttributeRight multiplier:1.0 constant:ATLAvatarImageTailPadding];
+            [self.contentView addConstraint:self.bubbleWithAvatarLeadConstraint];
+            self.bubbleWithoutAvatarLeadConstraint = [NSLayoutConstraint constraintWithItem:self.bubbleView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeLeft multiplier:1.0 constant:0];
+            break;
         default:
             break;
     }
