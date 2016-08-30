@@ -457,6 +457,10 @@ static NSInteger const ATLPhotoActionSheet = 1000;
     if ([self shouldDisplaySenderLabelForSection:indexPath.section]) {
         [header updateWithParticipantName:[self participantNameForMessage:message]];
     }
+    
+    if ([self.delegate respondsToSelector:@selector(conversationViewController:configureHeader:forMessage:)]) {
+        [self.delegate conversationViewController:self configureHeader:header forMessage:message];
+    }
 }
 
 #pragma mark - UI Configuration

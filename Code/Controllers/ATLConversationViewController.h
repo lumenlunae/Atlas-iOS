@@ -31,6 +31,7 @@ typedef NS_ENUM(NSUInteger, ATLAvatarItemDisplayFrequency) {
 };
 
 @class ATLConversationViewController;
+@class ATLConversationCollectionViewHeader;
 @protocol ATLMessagePresenting;
 
 ///---------------------------------------
@@ -114,6 +115,8 @@ NS_ASSUME_NONNULL_BEGIN
 @return YES will send location. NO will not. Can add custom action within the delegate
  */
 - (BOOL)conversationViewControllerDidTapRightAccessoryButtonShouldSendLocation:(ATLConversationViewController *)viewController;
+
+- (void)conversationViewController:(ATLConversationViewController *)conversationViewController configureHeader:(ATLConversationCollectionViewHeader *)header forMessage:(LYRMessage *)message;
 @end
 
 ///---------------------------------------
