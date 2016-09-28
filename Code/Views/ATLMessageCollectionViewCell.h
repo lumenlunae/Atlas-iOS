@@ -69,5 +69,7 @@ extern NSString *const ATLVideoAccessibilityLabel;
  */
 + (CGFloat)cellHeightForMessage:(LYRMessage *)message inView:(UIView *)view;
 
+- (void)resetCellView;
+
 @end
 NS_ASSUME_NONNULL_END

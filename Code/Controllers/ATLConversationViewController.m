@@ -111,6 +111,7 @@ static NSInteger const ATLPhotoActionSheet = 1000;
 {
     _dateDisplayTimeInterval = 60*60;
     _marksMessagesAsRead = YES;
+    _shouldDisplaySenderLabelForOneOtherParticipant = NO;
     _shouldDisplayAvatarItemForOneOtherParticipant = NO;
     _shouldDisplayAvatarItemForAuthenticatedUser = NO;
     _avatarItemDisplayFrequency = ATLAvatarItemDisplayFrequencySection;
@@ -455,6 +456,10 @@ static NSInteger const ATLPhotoActionSheet = 1000;
     }
     if ([self shouldDisplaySenderLabelForSection:indexPath.section]) {
         [header updateWithParticipantName:[self participantNameForMessage:message]];
+        
+        if ([self.delegate respondsToSelector:@selector(conversationViewController:configureHeader:forMessage:)]) {
+            [self.delegate conversationViewController:self configureHeader:header forMessage:message];
+        }
     }
 }
 
@@ -489,7 +494,7 @@ static NSInteger const ATLPhotoActionSheet = 1000;
 
 - (BOOL)shouldDisplaySenderLabelForSection:(NSUInteger)section
 {
-    if (self.conversation.participants.count <= 2) return NO;
+    if (self.conversation.participants.count <= 2 && !self.shouldDisplaySenderLabelForOneOtherParticipant) return NO;
     
     LYRMessage *message = [self.conversationDataSource messageAtCollectionViewSection:section];
     if ([message.sender.userID isEqualToString:self.layerClient.authenticatedUser.userID]) return NO;
@@ -498,6 +503,9 @@ static NSInteger const ATLPhotoActionSheet = 1000;
         if ([previousMessage.sender.userID isEqualToString:message.sender.userID]) {
             return NO;
         }
+    }
+    if ([self.delegate respondsToSelector:@selector(conversationViewController:shouldDisplaySenderLabelForMessage:)]) {
+        return [self.delegate conversationViewController:self shouldDisplaySenderLabelForMessage:message];
     }
     return YES;
 }
@@ -581,7 +589,13 @@ static NSInteger const ATLPhotoActionSheet = 1000;
     // If there's no content in the input field, send the location.
     NSOrderedSet *messages = [self messagesForMediaAttachments:messageInputToolbar.mediaAttachments];
     if (messages.count == 0 && messageInputToolbar.textInputView.text.length == 0) {
-        [self sendLocationMessage];
+        BOOL useDefaultAction = YES;
+        if ([self.delegate respondsToSelector:@selector(conversationViewControllerDidTapRightAccessoryButtonShouldSendLocation:)]) {
+            useDefaultAction = [self.delegate conversationViewControllerDidTapRightAccessoryButtonShouldSendLocation:self];
+        }
+        if (useDefaultAction) {
+            [self sendLocationMessage];
+        }
     } else {
         for (LYRMessage *message in messages) {
             [self sendMessage:message];
@@ -1210,32 +1224,41 @@ static NSInteger const ATLPhotoActionSheet = 1000;
     // ensure the animation's queue will resume
     if (self.collectionView) {
         dispatch_suspend(self.animationQueue);
-        [self.collectionView performBatchUpdates:^{
-            for (ATLDataSourceChange *change in objectChanges) {
-                switch (change.type) {
-                    case LYRQueryControllerChangeTypeInsert:
-                        [self.collectionView insertSections:[NSIndexSet indexSetWithIndex:change.newIndex]];
-                        break;
-                        
-                    case LYRQueryControllerChangeTypeMove:
-                        [self.collectionView moveSection:change.currentIndex toSection:change.newIndex];
-                        break;
-                        
-                    case LYRQueryControllerChangeTypeDelete:
-                        [self.collectionView deleteSections:[NSIndexSet indexSetWithIndex:change.currentIndex]];
-                        break;
-                        
-                    case LYRQueryControllerChangeTypeUpdate:
-                        // If we call reloadSections: for a section that is already being animated due to another move (e.g. moving section 17 to 16 causes section 16 to be moved/animated to 17 and then we also reload section 16), UICollectionView will throw an exception. But since all onscreen sections will be reconfigured (see below) we don't need to reload the sections here anyway.
-                        break;
-                        
-                    default:
-                        break;
+        @try {
+            [self.collectionView performBatchUpdates:^{
+                for (ATLDataSourceChange *change in objectChanges) {
+                    switch (change.type) {
+                        case LYRQueryControllerChangeTypeInsert:
+                            [self.collectionView insertSections:[NSIndexSet indexSetWithIndex:change.newIndex]];
+                            break;
+                            
+                        case LYRQueryControllerChangeTypeMove:
+                            [self.collectionView moveSection:change.currentIndex toSection:change.newIndex];
+                            break;
+                            
+                        case LYRQueryControllerChangeTypeDelete:
+                            [self.collectionView deleteSections:[NSIndexSet indexSetWithIndex:change.currentIndex]];
+                            break;
+                            
+                        case LYRQueryControllerChangeTypeUpdate:
+                            // If we call reloadSections: for a section that is already being animated due to another move (e.g. moving section 17 to 16 causes section 16 to be moved/animated to 17 and then we also reload section 16), UICollectionView will throw an exception. But since all onscreen sections will be reconfigured (see below) we don't need to reload the sections here anyway.
+                            break;
+                            
+                        default:
+                            break;
+                    }
                 }
-            }
-        } completion:^(BOOL finished) {
+            } completion:^(BOOL finished) {
+                dispatch_resume(self.animationQueue);
+            }];
+        } @catch(NSException *exception) {
             dispatch_resume(self.animationQueue);
-        }];
+            NSError *error;
+            [self.queryController execute:&error];
+            if (error == nil) {
+                [self.collectionView reloadData];
+            }
+        }
     }
     [self configureCollectionViewElements];
     

@@ -31,6 +31,7 @@ typedef NS_ENUM(NSUInteger, ATLAvatarItemDisplayFrequency) {
 };
 
 @class ATLConversationViewController;
+@class ATLConversationCollectionViewHeader;
 @protocol ATLMessagePresenting;
 
 ///---------------------------------------
@@ -99,6 +100,23 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (NSOrderedSet <LYRMessage*> *)conversationViewController:(ATLConversationViewController *)viewController messagesForMediaAttachments:(NSArray <ATLMediaAttachment*> *)mediaAttachments;
 
+
+/**
+ @abstract Asks the delegate whether or not to display the participant label
+ @param viewController The `ATLConversationViewController` supplying the content parts.
+ @param message The `LYRMessage` object that will be displayed in the cell.
+ @return BOOL to decide whether to display the label
+ */
+- (BOOL)conversationViewController:(ATLConversationViewController *)viewController shouldDisplaySenderLabelForMessage:(LYRMessage *)message;
+
+/**
+@abstract Asks the delegate whether or not ti use the rightAccessoryButton for its default Send Location action
+@param viewController The `ATLConversationViewController` supplying the content parts.
+@return YES will send location. NO will not. Can add custom action within the delegate
+ */
+- (BOOL)conversationViewControllerDidTapRightAccessoryButtonShouldSendLocation:(ATLConversationViewController *)viewController;
+
+- (void)conversationViewController:(ATLConversationViewController *)conversationViewController configureHeader:(ATLConversationCollectionViewHeader *)header forMessage:(LYRMessage *)message;
 @end
 
 ///---------------------------------------
@@ -278,6 +296,13 @@ NS_ASSUME_NONNULL_BEGIN
  @default `YES`.
  */
 @property (nonatomic) BOOL marksMessagesAsRead;
+
+/**
+ @abstract A Boolean value that determines whether or not sender names are shown if there is only one other participant
+ in the conversation
+ @default `NO`.
+ */
+@property (nonatomic) BOOL shouldDisplaySenderLabelForOneOtherParticipant;
 
 /**
  @abstract A Boolean value that determines whether or not an avatar is shown if there is only one other participant in the conversation.

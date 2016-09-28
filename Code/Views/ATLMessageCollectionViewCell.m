@@ -350,6 +350,12 @@ NSInteger const kATLSharedCellTag = 1000;
     self.bubbleView.textCheckingTypes = messageLinkTypes;
 }
 
+- (void)resetCellView
+{
+    [self lyr_commonInit];
+}
+
+
 #pragma mark - LYRProgress Delegate Implementation
 
 - (void)progressDidChange:(LYRProgress *)progress

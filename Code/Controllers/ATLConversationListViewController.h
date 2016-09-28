@@ -282,6 +282,6 @@ NS_ASSUME_NONNULL_BEGIN
  @param conversation The Conversation object to reload the corresponding cell of. Cannot be `nil`.
  */
 - (void)reloadCellForConversation:(LYRConversation *)conversation;
-
+- (void)setupConversationDataSource;
 @end
 NS_ASSUME_NONNULL_END

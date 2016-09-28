@@ -16,6 +16,7 @@
 typedef NS_ENUM(NSInteger, ATLCellType) {
     ATLOutgoingCellType,
     ATLIncomingCellType,
+    ATLCenteredCellType
 };
 
 extern CGFloat const ATLMessageCellHorizontalMargin;
