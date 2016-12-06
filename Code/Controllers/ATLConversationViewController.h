@@ -323,6 +323,9 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic) ATLAvatarItemDisplayFrequency avatarItemDisplayFrequency;
 
+/**
+ @abstract Allow overriding of UIScrollViewDelegate method scrollViewDidScroll
+ */
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView;
 
 @end
