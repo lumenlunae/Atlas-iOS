@@ -1,5 +1,40 @@
 # Atlas Changelog
 
+## Unreleased
+
+### Enhancements
+
+* Replaced deprecated `UISearchDisplayController` with `UISearchController` in `ATLConversationListViewController`. This reduces complexity by removing the need to switch between different query controllers.
+* Refactored `ATLConversationViewController` to harden against mismanagement and prevent common crashes and issues.
+
+### Bug Fixes
+
+* Fixed a pagination issue in `ATLConversationViewController` where, after navigating to a conversation, additional messages would not sync and the activity indicator would continue to spin until the user pulled down.
+* `ATLConversationListViewController` no longer filters out conversations the authenticated user was removed from. This allows the user to access the conversation and mark messages as read in order to have an accurate unread badge count.
+
+## 1.0.30
+
+### Enhancements
+
+* `ATLParticipantTableDataSet` is now mutable and observes changes to Identity objects and updates the associated `UITableView`. [APPS-2470]
+* Displays timestamps in `ATLConversationViewController` for groups of messages regardless of sorting. Messages sent first but displayed second will now show a timestamp. [APPS-2608]
+* Adds pagination capabilities to the `ATLConversationViewController` query controller. [APPS-2524]
+
+### Bug Fixes
+
+* Fixes a case in `ATLConversationViewController` where the query controller's delegate would not be unset.
+* Fixes a couple issues in `ATLConversationListViewController` where the query controller could be instantiated twice. [APPS-2598]
+* Fixes an issue where the "more messages" indicator would not initially appear in `ATLConversationViewController`.
+
+## 1.0.29
+
+### Bug Fixes
+
+* Fixes the build errors in the included Example classes.
+* Fixes a crash when updating the `ATLConversationListViewController` while the search bar is active. [APPS-2587]
+* Fixes an issue in iOS 9 where the list of conversations would briefly flash when returning from a view with an active keyboard. [APPS-2594]
+* Fixes an issue in the `ATLMessageInputToolbar` where adding a new line would result in text misalignment. [APPS-2593]
+
 ## 1.0.28
 
 ### Bug Fixes
