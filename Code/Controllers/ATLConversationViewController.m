@@ -1284,7 +1284,7 @@ static NSInteger const ATLPhotoActionSheet = 1000;
         } @catch(NSException *exception) {
             dispatch_resume(self.animationQueue);
             NSError *error;
-            [self.queryController execute:&error];
+            //[self.queryController execute:&error];
             if (error == nil) {
                 [self.collectionView reloadData];
             }
