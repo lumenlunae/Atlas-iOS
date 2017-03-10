@@ -12,11 +12,13 @@ target 'Storyboard' do
 end
 
 abstract_target 'test' do
-  pod 'KIFViewControllerActions', git: 'https://github.com/blakewatters/KIFViewControllerActions.git'
+  pod 'KIFViewControllerActions', '~> 1.0.2' 
   pod 'LYRCountDownLatch', git: 'https://github.com/layerhq/LYRCountDownLatch.git'
   pod 'KIF'
   pod 'Expecta'
   pod 'OCMock'
+  pod 'LayerKit'
+  pod 'Atlas', path: '.'
 
   target 'ProgrammaticTests'
   target 'StoryboardTests'
@@ -25,6 +27,9 @@ end
 target 'UnitTests' do
   pod 'Expecta'
   pod 'OCMock'
+  pod 'KIF'
+  pod 'LayerKit'
+  pod 'Atlas', path: '.'
 end
 
 
